@@ -1,7 +1,6 @@
 package com.example.trdemoapi.controller;
 
 import com.example.trdemoapi.model.Course;
-import com.example.trdemoapi.model.Grade;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.requestModel.GradeRequest;
 import org.springframework.http.ResponseEntity;
