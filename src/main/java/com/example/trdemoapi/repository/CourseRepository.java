@@ -1,4 +1,9 @@
 package com.example.trdemoapi.repository;
 
-public interface CourseRepository {
+import com.example.trdemoapi.model.Course;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CourseRepository extends JpaRepository<Course, Long> {
 }

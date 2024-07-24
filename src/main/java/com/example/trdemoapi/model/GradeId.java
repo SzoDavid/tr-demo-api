@@ -2,22 +2,26 @@ package com.example.trdemoapi.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
+@Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@Embeddable
 public class GradeId implements java.io.Serializable {
     private static final long serialVersionUID = 3603286201724279846L;
     @Column(name = "course_id", nullable = false)
-    private Integer courseId;
+    private Long courseId;
 
     @Column(name = "student_id", nullable = false)
-    private Integer studentId;
+    private Long studentId;
 
     @Override
     public boolean equals(Object o) {
@@ -32,5 +36,4 @@ public class GradeId implements java.io.Serializable {
     public int hashCode() {
         return Objects.hash(studentId, courseId);
     }
-
 }
