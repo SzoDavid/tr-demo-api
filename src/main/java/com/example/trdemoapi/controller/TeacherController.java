@@ -2,7 +2,7 @@ package com.example.trdemoapi.controller;
 
 import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.model.User;
-import com.example.trdemoapi.requestModel.GradeRequest;
+import com.example.trdemoapi.model.request.GradeRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

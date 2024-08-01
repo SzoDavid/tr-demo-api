@@ -1,6 +1,6 @@
 package com.example.trdemoapi.controller;
 
-import com.example.trdemoapi.requestModel.PasswordChangeRequest;
+import com.example.trdemoapi.model.request.PasswordChangeRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.example.trdemoapi.requestModel;
+package com.example.trdemoapi.model.request;
 
 public record LoginRequest(String email, String password) {
 }

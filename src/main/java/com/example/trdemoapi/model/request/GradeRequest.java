@@ -1,4 +1,4 @@
-package com.example.trdemoapi.requestModel;
+package com.example.trdemoapi.model.request;
 
 import com.example.trdemoapi.model.User;
 

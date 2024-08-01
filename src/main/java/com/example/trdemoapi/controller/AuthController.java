@@ -1,6 +1,6 @@
 package com.example.trdemoapi.controller;
 
-import com.example.trdemoapi.requestModel.LoginRequest;
+import com.example.trdemoapi.model.request.LoginRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
