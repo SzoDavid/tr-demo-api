@@ -3,6 +3,7 @@ package com.example.trdemoapi.controller;
 import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.model.Subject;
 import com.example.trdemoapi.model.User;
+import com.example.trdemoapi.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +12,18 @@ import java.util.ArrayList;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
+    private final UserService userService;
+
+    public AdminController(UserService userService) {
+        this.userService = userService;
+    }
+
     //region User
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers() {
-        return ResponseEntity.ok().body(new ArrayList<User>());
+        var users = userService.allUsers();
+
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/users/{id}")
