@@ -50,7 +50,3 @@ CREATE TABLE grades (
     FOREIGN KEY (course_id) REFERENCES courses (id),
     FOREIGN KEY (student_id) REFERENCES users (id)
 );
-
-INSERT INTO roles (id, name) VALUES (1, 'student');
-INSERT INTO roles (id, name) VALUES (2, 'teacher');
-INSERT INTO roles (id, name) VALUES (3, 'admin');
