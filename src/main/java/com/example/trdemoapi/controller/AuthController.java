@@ -40,9 +40,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@Valid @RequestBody LoginReq input) {
         var authenticatedUser = authenticationService.authenticate(input);
-
         var jwtToken = jwtService.generateToken(authenticatedUser);
-
         var loginResponse = new LoginResp(jwtToken, jwtService.getExpirationTime());
 
         return ResponseEntity.ok(loginResponse);
