@@ -27,9 +27,9 @@ public class AuthenticationService {
 
     public User signup(SignUpReq input) {
         var user = new User()
-                .setName(input.name())
-                .setEmail(input.email())
-                .setPassword(passwordEncoder.encode(input.password()));
+                .setName(input.getName())
+                .setEmail(input.getEmail())
+                .setPassword(passwordEncoder.encode(input.getPassword()));
 
         return userRepository.save(user);
     }
@@ -37,12 +37,12 @@ public class AuthenticationService {
     public User authenticate(LoginReq input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        input.email(),
-                        input.password()
+                        input.getEmail(),
+                        input.getPassword()
                 )
         );
 
-        return userRepository.findByEmail(input.email())
+        return userRepository.findByEmail(input.getEmail())
                 .orElseThrow();
     }
 }

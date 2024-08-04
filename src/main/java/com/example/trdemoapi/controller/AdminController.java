@@ -4,6 +4,8 @@ import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.model.Subject;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/admin")
+@Tag(name="Admin", description="the endpoints for authenticated admins")
 public class AdminController {
     private final UserService userService;
 
@@ -19,6 +22,7 @@ public class AdminController {
     }
 
     //region User
+    @Operation(summary="All users", description="Returns with a details of all users")
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers() {
         var users = userService.allUsers();

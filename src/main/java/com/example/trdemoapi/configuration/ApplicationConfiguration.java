@@ -1,30 +1,19 @@
 package com.example.trdemoapi.configuration;
 
-import com.example.trdemoapi.repository.UserRepository;
+import com.example.trdemoapi.service.UserService;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 public class ApplicationConfiguration {
-    private final UserRepository userRepository;
-
-    public ApplicationConfiguration(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Bean
-    UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
-
     @Bean
     BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -36,12 +25,20 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    AuthenticationProvider authenticationProvider() {
+    AuthenticationProvider authenticationProvider(UserService userDetailsService) {
         var authProvider = new DaoAuthenticationProvider();
 
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
 
         return authProvider;
+    }
+
+    @Bean
+    public OpenAPI customOpenAPI(@Value("${app.version}") String appVersion) {
+        return new OpenAPI().info(new Info()
+                .title("TR API")
+                .version(appVersion)
+                .description("This is a demo API for a school system"));
     }
 }

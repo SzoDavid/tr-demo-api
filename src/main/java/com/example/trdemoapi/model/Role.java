@@ -1,10 +1,8 @@
 package com.example.trdemoapi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
@@ -14,8 +12,10 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @ToString
+@Accessors(chain = true)
 public class Role {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('roles_id_seq'::regclass)")
     @Column(name = "id", nullable = false)
     private Long id;
@@ -23,4 +23,8 @@ public class Role {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
+    /*
+    @ManyToMany(mappedBy = "roles")
+    private Collection<User> users;
+    */
 }
