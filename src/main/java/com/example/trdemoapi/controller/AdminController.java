@@ -1,9 +1,10 @@
 package com.example.trdemoapi.controller;
 
 import com.example.trdemoapi.dto.CreateUserReq;
+import com.example.trdemoapi.dto.UpdateUserRolesReq;
+import com.example.trdemoapi.dto.UserResp;
 import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.model.Subject;
-import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +14,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -26,34 +29,41 @@ public class AdminController {
     }
 
     //region User
-    @Operation(summary="All users", description="Returns with a details of all users")
+    @Operation(summary="All users", description="Returns with the details of all users")
     @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers() {
-        var users = userService.allUsers();
+    public ResponseEntity<List<UserResp>> getAllUsers() {
+        var users = userService.allUsers().stream().map(UserResp::fromUser).collect(Collectors.toList());
 
         return ResponseEntity.ok(users);
     }
 
+    @Operation(summary="Get user by id", description="Returns with the details of the user with the given id")
     @GetMapping("/users/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        var user = userService.loadUserById(id);
+    public ResponseEntity<UserResp> getUserById(@PathVariable Long id) {
+        var user = UserResp.fromUser(userService.loadUserById(id));
 
         return ResponseEntity.ok().body(user);
     }
 
+    @Operation(summary="Create user", description="Returns with the user created")
     @PostMapping("/users")
-    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserReq request) {
-        var user = userService.createUser(request);
+    public ResponseEntity<UserResp> createUser(@Valid @RequestBody CreateUserReq request) {
+        var user = UserResp.fromUser(userService.createUser(request));
         return ResponseEntity.ok().body(user);
     }
 
+    @Operation(summary="Update user roles", description="Updates the user's roles with the given list")
     @PutMapping("/users/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
-        return ResponseEntity.ok().body(user);
+    public ResponseEntity<UserResp> updateUserRoles(@PathVariable Long id, @RequestBody UpdateUserRolesReq request) {
+        var user = userService.loadUserById(id);
+        var response = UserResp.fromUser(userService.updateUserRoles(user, request.getRoles()));
+
+        return ResponseEntity.ok().body(response);
     }
 
+    @Operation(summary="Delete user", description="Deletes the user with the given id")
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         var user = userService.loadUserById(id);
         userService.deleteUser(user);
 

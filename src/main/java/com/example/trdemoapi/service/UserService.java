@@ -2,6 +2,7 @@ package com.example.trdemoapi.service;
 
 import com.example.trdemoapi.dto.CreateUserReq;
 import com.example.trdemoapi.dto.PasswordChangeReq;
+import com.example.trdemoapi.model.ERole;
 import com.example.trdemoapi.model.Role;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.repository.RoleRepository;
@@ -43,6 +44,10 @@ public class UserService implements UserDetailsService {
                 true, getAuthorities(user.getRoles()));
     }
 
+    public User loadUserByEmail(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
     @Transactional
     public void changePassword(String email, PasswordChangeReq request) {
         var user = userRepository.findByEmail(email)
@@ -80,6 +85,17 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void deleteUser(User user) {
         userRepository.delete(user);
+    }
+
+    @Transactional
+    public User updateUserRoles(User user, List<ERole> roles) {
+        var newRoles = new ArrayList<Role>();
+        for (var role : roles) {
+            newRoles.add(roleRepository.findByName(role.getNameWithPrefix()));
+        }
+
+        user.setRoles(newRoles);
+        return userRepository.save(user);
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roles) {

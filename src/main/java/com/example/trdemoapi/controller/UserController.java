@@ -1,6 +1,7 @@
 package com.example.trdemoapi.controller;
 
 import com.example.trdemoapi.dto.PasswordChangeReq;
+import com.example.trdemoapi.dto.UserResp;
 import com.example.trdemoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,9 +29,9 @@ public class UserController {
 
     @Operation(summary="Details of current user", description="Returns with id, name and email of current user")
     @GetMapping("/me")
-    public ResponseEntity<?> getDetails() {
+    public ResponseEntity<UserResp> getDetails() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var currentUser = userService.loadUserByUsername(authentication.getName());
+        var currentUser = UserResp.fromUser(userService.loadUserByEmail(authentication.getName()));
 
         return ResponseEntity.ok(currentUser);
     }
@@ -48,7 +49,7 @@ public class UserController {
             ))
     })
     @PutMapping("/me/change-password")
-    public ResponseEntity<?> changePassword(@Valid @RequestBody PasswordChangeReq passwordChangeRequest) {
+    public ResponseEntity<String> changePassword(@Valid @RequestBody PasswordChangeReq passwordChangeRequest) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         userService.changePassword(authentication.getName(), passwordChangeRequest);
