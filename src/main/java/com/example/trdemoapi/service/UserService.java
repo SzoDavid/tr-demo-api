@@ -1,8 +1,10 @@
 package com.example.trdemoapi.service;
 
+import com.example.trdemoapi.dto.CreateUserReq;
 import com.example.trdemoapi.dto.PasswordChangeReq;
 import com.example.trdemoapi.model.Role;
 import com.example.trdemoapi.model.User;
+import com.example.trdemoapi.repository.RoleRepository;
 import com.example.trdemoapi.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,10 +21,12 @@ import java.util.*;
 @Transactional
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -41,7 +45,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void changePassword(String email, PasswordChangeReq request) {
-        User user = userRepository.findByEmail(email)
+        var user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
@@ -50,6 +54,32 @@ public class UserService implements UserDetailsService {
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+    }
+
+    @Transactional
+    public User loadUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+    }
+
+    @Transactional
+    public User createUser(CreateUserReq request) {
+        var user = new User()
+                .setName(request.getName())
+                .setEmail(request.getEmail())
+                .setPassword(passwordEncoder.encode(request.getPassword()));
+
+        var roles = new ArrayList<Role>();
+        for (var role : request.getRoles()) {
+            roles.add(roleRepository.findByName(role.getNameWithPrefix()));
+        }
+        user.setRoles(roles);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(User user) {
+        userRepository.delete(user);
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roles) {

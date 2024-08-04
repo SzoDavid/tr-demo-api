@@ -1,16 +1,20 @@
 package com.example.trdemoapi.controller;
 
+import com.example.trdemoapi.dto.CreateUserReq;
 import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.model.Subject;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
+@Validated
 @RestController
 @RequestMapping("/admin")
 @Tag(name="Admin", description="the endpoints for authenticated admins")
@@ -32,11 +36,14 @@ public class AdminController {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(new User());
+        var user = userService.loadUserById(id);
+
+        return ResponseEntity.ok().body(user);
     }
 
     @PostMapping("/users")
-    public ResponseEntity<?> createUser(@RequestBody User user) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserReq request) {
+        var user = userService.createUser(request);
         return ResponseEntity.ok().body(user);
     }
 
@@ -47,7 +54,10 @@ public class AdminController {
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        return ResponseEntity.ok().body("delete user");
+        var user = userService.loadUserById(id);
+        userService.deleteUser(user);
+
+        return ResponseEntity.ok().body("User deleted successfully");
     }
     //endregion
 

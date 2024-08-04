@@ -1,5 +1,6 @@
 package com.example.trdemoapi.configuration;
 
+import com.example.trdemoapi.model.ERole;
 import com.example.trdemoapi.model.Role;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.repository.RoleRepository;
@@ -31,10 +32,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (alreadySetup) return;
 
-        var adminRole = createRoleIfNotFound("ROLE_ADMIN");
-        createRoleIfNotFound("ROLE_STUDENT");
-        createRoleIfNotFound("ROLE_TEACHER");
-
+        var adminRole = createRoleIfNotFound(ERole.ADMIN.getNameWithPrefix());
+        createRoleIfNotFound(ERole.STUDENT.getNameWithPrefix());
+        createRoleIfNotFound(ERole.TEACHER.getNameWithPrefix());
 
         var user = userRepository.findByEmail("test@test.com");
         if (user.isEmpty()) {
