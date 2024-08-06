@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public final class CreateUserReq {
+public class CreateUserReq {
     @NotEmpty(message="Name is required")
     @Size(min=2, max=255, message="The length of name must be between 2 and 255")
     private final String name;

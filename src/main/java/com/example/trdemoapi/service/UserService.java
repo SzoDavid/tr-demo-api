@@ -48,8 +48,13 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    public User loadUserById(Long id) throws IllegalArgumentException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+    }
+
     @Transactional
-    public void changePassword(String email, PasswordChangeReq request) {
+    public void changePassword(String email, PasswordChangeReq request) throws IllegalArgumentException {
         var user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
 
@@ -59,12 +64,6 @@ public class UserService implements UserDetailsService {
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
-    }
-
-    @Transactional
-    public User loadUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
 
     @Transactional
@@ -95,6 +94,18 @@ public class UserService implements UserDetailsService {
         }
 
         user.setRoles(newRoles);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User addUserRole(User user, ERole role) {
+        if (user.hasRole(role)) {
+            return user;
+        }
+
+        var roles = user.getRoles();
+        roles.add(roleRepository.findByName(role.getNameWithPrefix()));
+        user.setRoles(roles);
         return userRepository.save(user);
     }
 

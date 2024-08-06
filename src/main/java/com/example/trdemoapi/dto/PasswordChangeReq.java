@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public final class PasswordChangeReq {
+public class PasswordChangeReq {
     @NotEmpty(message="Old password is required")
     private final String oldPassword;
 

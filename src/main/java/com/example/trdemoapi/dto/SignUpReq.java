@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public final class SignUpReq {
+public class SignUpReq {
     @NotEmpty(message="Name is required")
     @Size(min=2, max=255, message="The length of name must be between 2 and 255")
     private final String name;

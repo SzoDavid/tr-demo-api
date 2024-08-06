@@ -2,7 +2,6 @@ package com.example.trdemoapi.controller;
 
 import com.example.trdemoapi.dto.LoginReq;
 import com.example.trdemoapi.dto.LoginResp;
-import com.example.trdemoapi.dto.SignUpReq;
 import com.example.trdemoapi.service.AuthenticationService;
 import com.example.trdemoapi.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,14 +25,6 @@ public class AuthController {
     public AuthController(JwtService jwtService, AuthenticationService authenticationService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
-    }
-
-    // TODO: remove
-    @PostMapping("/signup")
-    public ResponseEntity<?> register(@Valid @RequestBody SignUpReq input) {
-        var registeredUser = authenticationService.signup(input);
-
-        return ResponseEntity.ok(registeredUser);
     }
 
     @Operation(summary="Authenticate user", description="Returns with a JWT token and when will it expire")

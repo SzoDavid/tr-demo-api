@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public final class LoginReq {
+public class LoginReq {
     @NotEmpty(message="Email is required")
     private final String email;
 
