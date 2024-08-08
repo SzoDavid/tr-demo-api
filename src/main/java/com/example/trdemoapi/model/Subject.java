@@ -2,7 +2,10 @@ package com.example.trdemoapi.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.Collection;
 
 @Entity
 @Table(name = "subjects")
@@ -11,6 +14,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @ToString
+@Accessors(chain = true)
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,4 +31,6 @@ public class Subject {
     @Column(name = "credit", nullable = false)
     private Integer credit;
 
+    @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Collection<Course> courses;
 }

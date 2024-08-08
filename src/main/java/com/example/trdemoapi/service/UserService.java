@@ -1,13 +1,21 @@
 package com.example.trdemoapi.service;
 
+import com.example.trdemoapi.dto.CreateUserReq;
+import com.example.trdemoapi.dto.PasswordChangeReq;
+import com.example.trdemoapi.model.Course;
+import com.example.trdemoapi.model.ERole;
 import com.example.trdemoapi.model.Role;
 import com.example.trdemoapi.model.User;
+import com.example.trdemoapi.repository.RoleRepository;
+import com.example.trdemoapi.repository.StudentCourseRepository;
 import com.example.trdemoapi.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +25,24 @@ import java.util.*;
 @Transactional
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final StudentCourseRepository studentCourseRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, StudentCourseRepository studentCourseRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.studentCourseRepository = studentCourseRepository;
     }
 
     public List<User> allUsers() {
         return new ArrayList<>(userRepository.findAll());
+    }
+
+    public User loadCurrentUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        return loadUserByEmail(authentication.getName());
     }
 
     @Override
@@ -33,6 +52,72 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(), user.getPassword(), user.isEnabled(), true, true,
                 true, getAuthorities(user.getRoles()));
+    }
+
+    public User loadUserByEmail(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public User loadUserById(Long id) throws IllegalArgumentException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+    }
+
+    public List<User> loadUsersByCourse(Course course) {
+        return studentCourseRepository.findStudentsByCourseId(course.getId());
+    }
+
+    @Transactional
+    public void changePassword(User user, PasswordChangeReq request) throws IllegalArgumentException {
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect.");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public User createUser(CreateUserReq request) {
+        var user = new User()
+                .setName(request.getName())
+                .setEmail(request.getEmail())
+                .setPassword(passwordEncoder.encode(request.getPassword()));
+
+        var roles = new ArrayList<Role>();
+        for (var role : request.getRoles()) {
+            roles.add(roleRepository.findByName(role.getNameWithPrefix()));
+        }
+        user.setRoles(roles);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    }
+
+    @Transactional
+    public User updateUserRoles(User user, List<ERole> roles) {
+        var newRoles = new ArrayList<Role>();
+        for (var role : roles) {
+            newRoles.add(roleRepository.findByName(role.getNameWithPrefix()));
+        }
+
+        user.setRoles(newRoles);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User addUserRole(User user, ERole role) {
+        if (user.hasRole(role)) {
+            return user;
+        }
+
+        var roles = user.getRoles();
+        roles.add(roleRepository.findByName(role.getNameWithPrefix()));
+        user.setRoles(roles);
+        return userRepository.save(user);
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roles) {

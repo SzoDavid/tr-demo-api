@@ -1,5 +1,6 @@
 package com.example.trdemoapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -14,6 +15,7 @@ import org.hibernate.annotations.ColumnDefault;
 @ToString
 @Accessors(chain = true)
 public class Role {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('roles_id_seq'::regclass)")
@@ -22,9 +24,4 @@ public class Role {
 
     @Column(name = "name", nullable = false, length = 50)
     private String name;
-
-    /*
-    @ManyToMany(mappedBy = "roles")
-    private Collection<User> users;
-    */
 }

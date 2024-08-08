@@ -1,5 +1,6 @@
 package com.example.trdemoapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -32,6 +33,7 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false, length = 320)
     private String email;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -41,13 +43,20 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> roles = new LinkedHashSet<>();
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public boolean hasRole(ERole eRole) {
+        var roleName = eRole.getNameWithPrefix();
+        return roles.stream().anyMatch(role -> roleName.equals(role.getName()));
     }
 }

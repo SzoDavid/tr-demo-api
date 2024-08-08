@@ -1,5 +1,6 @@
 package com.example.trdemoapi.configuration;
 
+import com.example.trdemoapi.model.ERole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -36,9 +37,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/student/**").hasRole("STUDENT")
-                        .requestMatchers("/teacher/**").hasRole("TEACHER")
+                        .requestMatchers("/admin/**").hasRole(ERole.ADMIN.getName())
+                        .requestMatchers("/student/**").hasRole(ERole.STUDENT.getName())
+                        .requestMatchers("/teacher/**").hasRole(ERole.TEACHER.getName())
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
