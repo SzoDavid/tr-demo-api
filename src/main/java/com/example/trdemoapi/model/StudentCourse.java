@@ -2,6 +2,7 @@ package com.example.trdemoapi.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 @Entity
 @Table(name = "student_courses")
@@ -10,6 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
+@Accessors(chain = true)
 public class StudentCourse {
     @EmbeddedId
     private StudentCourseId id;

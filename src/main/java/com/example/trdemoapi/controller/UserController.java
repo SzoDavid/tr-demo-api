@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,8 +29,7 @@ public class UserController {
     @Operation(summary="Details of current user", description="Returns with id, name and email of current user")
     @GetMapping("/me")
     public ResponseEntity<User> getDetails() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var currentUser = userService.loadUserByEmail(authentication.getName());
+        var currentUser = userService.loadCurrentUser();
 
         return ResponseEntity.ok(currentUser);
     }
@@ -50,9 +48,9 @@ public class UserController {
     })
     @PutMapping("/me/change-password")
     public ResponseEntity<String> changePassword(@Valid @RequestBody PasswordChangeReq passwordChangeRequest) {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var currentUser = userService.loadCurrentUser();
 
-        userService.changePassword(authentication.getName(), passwordChangeRequest);
+        userService.changePassword(currentUser, passwordChangeRequest);
 
         return ResponseEntity.ok("Password changed successfully");
     }

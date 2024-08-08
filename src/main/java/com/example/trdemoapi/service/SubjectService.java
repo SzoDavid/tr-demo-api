@@ -3,6 +3,7 @@ package com.example.trdemoapi.service;
 import com.example.trdemoapi.dto.CreateSubjectReq;
 import com.example.trdemoapi.dto.UpdateSubjectReq;
 import com.example.trdemoapi.model.Subject;
+import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.repository.SubjectRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,10 @@ public class SubjectService {
 
     public Subject loadSubjectById(Long id) {
         return subjectRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Subject not found."));
+    }
+
+    public List<Subject> loadAvailableSubjectsForUser(User user) {
+        return subjectRepository.findAvailableSubjectsForUser(user.getId());
     }
 
     @Transactional

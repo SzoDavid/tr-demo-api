@@ -30,14 +30,14 @@ public class CourseController {
 
     @Operation(summary="Update course", description="Returns with the updated course")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCourse(@PathVariable Long id, @Valid @RequestBody UpdateCourseReq request) {
+    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @Valid @RequestBody UpdateCourseReq request) {
         var course = courseService.updateCourse(id, request);
         return ResponseEntity.ok().body(course);
     }
 
     @Operation(summary="Delete course", description="Deletes the course with the given id")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
+    public ResponseEntity<String> deleteCourse(@PathVariable Long id) {
         var subject = courseService.loadCourseById(id);
         courseService.deleteCourse(subject);
 

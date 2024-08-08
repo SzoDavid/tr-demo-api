@@ -9,6 +9,7 @@ import com.example.trdemoapi.repository.RoleRepository;
 import com.example.trdemoapi.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,6 +36,11 @@ public class UserService implements UserDetailsService {
         return new ArrayList<>(userRepository.findAll());
     }
 
+    public User loadCurrentUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        return loadUserByEmail(authentication.getName());
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         var user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -54,10 +60,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void changePassword(String email, PasswordChangeReq request) throws IllegalArgumentException {
-        var user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User not found."));
-
+    public void changePassword(User user, PasswordChangeReq request) throws IllegalArgumentException {
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Current password is incorrect.");
         }
