@@ -24,14 +24,14 @@ public class AdminUserController {
         this.userService = userService;
     }
 
-    @Operation(summary="All users", description="Returns with the details of all users")
+    @Operation(summary="All users", description="Returns with the details of all users.")
     @GetMapping("/")
     public ResponseEntity<List<User>> getAllUsers() {
         var users = userService.allUsers();
         return ResponseEntity.ok(users);
     }
 
-    @Operation(summary="Get user by id", description="Returns with the details of the user with the given id")
+    @Operation(summary="Get user by id", description="Returns with the details of the user with the given id.")
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         var user = userService.loadUserById(id);
@@ -39,14 +39,14 @@ public class AdminUserController {
         return ResponseEntity.ok().body(user);
     }
 
-    @Operation(summary="Create user", description="Returns with the user created")
+    @Operation(summary="Create user", description="Returns with the user created.")
     @PostMapping("/")
     public ResponseEntity<User> createUser(@Valid @RequestBody CreateUserReq request) {
         var user = userService.createUser(request);
         return ResponseEntity.ok().body(user);
     }
 
-    @Operation(summary="Update user roles", description="Updates the user's roles with the given list")
+    @Operation(summary="Update user roles", description="Updates the user's roles with the given list.")
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUserRoles(@PathVariable Long id, @Valid @RequestBody UpdateUserRolesReq request) {
         var user = userService.loadUserById(id);
@@ -55,7 +55,7 @@ public class AdminUserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary="Delete user", description="Deletes the user with the given id")
+    @Operation(summary="Delete user", description="Deletes the user with the given id.")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         var user = userService.loadUserById(id);

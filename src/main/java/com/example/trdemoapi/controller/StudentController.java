@@ -18,7 +18,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/student")
-@Tag(name="Student", description="the endpoints for authenticated students.")
+@Tag(name="Student", description="the endpoints for authenticated students")
 public class StudentController {
     private final CourseService courseService;
     private final UserService userService;
@@ -41,34 +41,37 @@ public class StudentController {
         return ResponseEntity.ok().body(subjects);
     }
 
-    @Operation(summary="All taken courses", description="Returns with all of the courses taken by the authenticated user.")
+    @Operation(summary="All taken courses", description="Returns with all of the courses taken by the authenticated " +
+            "user.")
     @GetMapping("/taken-courses")
     public ResponseEntity<List<Course>> getTakenCourses() {
         var currentUser = userService.loadCurrentUser();
-        var courses = courseService.loadAllCoursesForUser(currentUser);
+        var courses = courseService.loadAllCoursesForStudent(currentUser);
 
         return ResponseEntity.ok().body(courses);
     }
 
-    @Operation(summary="Register student for course", description="Returns with all of the courses taken by the authenticated user.")
+    @Operation(summary="Register student for course", description="Returns with all of the courses taken by the " +
+            "authenticated user.")
     @PostMapping("/taken-courses")
     public ResponseEntity<List<Course>> takeCourse(@RequestBody Long courseId) {
         var currentUser = userService.loadCurrentUser();
         var course = courseService.loadCourseById(courseId);
         courseService.registerUserOnCourse(currentUser, course);
 
-        var courses = courseService.loadAllCoursesForUser(currentUser);
+        var courses = courseService.loadAllCoursesForStudent(currentUser);
         return ResponseEntity.ok().body(courses);
     }
 
-    @Operation(summary="Unregister student from course", description="Returns with all of the courses taken by the authenticated user.")
+    @Operation(summary="Unregister student from course", description="Returns with all of the courses taken by the " +
+            "authenticated user.")
     @DeleteMapping("/taken-courses/{courseId}")
     public ResponseEntity<List<Course>> dropCourse(@PathVariable Long courseId) {
         var currentUser = userService.loadCurrentUser();
         var course = courseService.loadCourseById(courseId);
         courseService.unregisterUserOnCourse(currentUser, course);
 
-        var courses = courseService.loadAllCoursesForUser(currentUser);
+        var courses = courseService.loadAllCoursesForStudent(currentUser);
         return ResponseEntity.ok().body(courses);
     }
 

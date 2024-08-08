@@ -27,7 +27,7 @@ public class AuthController {
         this.authenticationService = authenticationService;
     }
 
-    @Operation(summary="Authenticate user", description="Returns with a JWT token and when will it expire")
+    @Operation(summary="Authenticate user", description="Returns with a JWT token and when will it expire.")
     @PostMapping("/login")
     public ResponseEntity<LoginResp> authenticate(@Valid @RequestBody LoginReq input) {
         var authenticatedUser = authenticationService.authenticate(input);

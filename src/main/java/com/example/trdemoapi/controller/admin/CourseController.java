@@ -21,21 +21,21 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-    @Operation(summary="Get course by id", description="Returns with the details of the course with the given id")
+    @Operation(summary="Get course by id", description="Returns with the details of the course with the given id.")
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
         var course = courseService.loadCourseById(id);
         return ResponseEntity.ok().body(course);
     }
 
-    @Operation(summary="Update course", description="Returns with the updated course")
+    @Operation(summary="Update course", description="Returns with the updated course.")
     @PutMapping("/{id}")
     public ResponseEntity<Course> updateCourse(@PathVariable Long id, @Valid @RequestBody UpdateCourseReq request) {
         var course = courseService.updateCourse(id, request);
         return ResponseEntity.ok().body(course);
     }
 
-    @Operation(summary="Delete course", description="Deletes the course with the given id")
+    @Operation(summary="Delete course", description="Deletes the course with the given id.")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCourse(@PathVariable Long id) {
         var subject = courseService.loadCourseById(id);

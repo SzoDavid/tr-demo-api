@@ -27,8 +27,12 @@ public class CourseService {
         return courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Course not found."));
     }
 
-    public List<Course> loadAllCoursesForUser(User user) {
-        return studentCourseRepository.findCoursesByStudentId(user.getId());
+    public List<Course> loadAllCoursesForStudent(User student) {
+        return studentCourseRepository.findCoursesByStudentId(student.getId());
+    }
+
+    public List<Course> loadAllCoursesForTeacher(User teacher) {
+        return courseRepository.findCoursesByTeacherId(teacher.getId());
     }
 
     @Transactional

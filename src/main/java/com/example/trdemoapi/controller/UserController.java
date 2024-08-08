@@ -26,7 +26,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Operation(summary="Details of current user", description="Returns with id, name and email of current user")
+    @Operation(summary="Details of current user", description="Returns with id, name and email of current user.")
     @GetMapping("/me")
     public ResponseEntity<User> getDetails() {
         var currentUser = userService.loadCurrentUser();
@@ -34,7 +34,8 @@ public class UserController {
         return ResponseEntity.ok(currentUser);
     }
 
-    @Operation(summary="Change password", description="If the old password is correct, updates the users password to the new one")
+    @Operation(summary="Change password", description="If the old password is correct, updates the users password to " +
+            "the new one.")
     @ApiResponses(value = {
             @ApiResponse(responseCode="200", description="Password changed successfully", content = @Content(
                     mediaType = "application/json",

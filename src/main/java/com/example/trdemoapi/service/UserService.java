@@ -2,10 +2,12 @@ package com.example.trdemoapi.service;
 
 import com.example.trdemoapi.dto.CreateUserReq;
 import com.example.trdemoapi.dto.PasswordChangeReq;
+import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.model.ERole;
 import com.example.trdemoapi.model.Role;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.repository.RoleRepository;
+import com.example.trdemoapi.repository.StudentCourseRepository;
 import com.example.trdemoapi.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,11 +27,13 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final StudentCourseRepository studentCourseRepository;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, StudentCourseRepository studentCourseRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.studentCourseRepository = studentCourseRepository;
     }
 
     public List<User> allUsers() {
@@ -57,6 +61,10 @@ public class UserService implements UserDetailsService {
     public User loadUserById(Long id) throws IllegalArgumentException {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
+    }
+
+    public List<User> loadUsersByCourse(Course course) {
+        return studentCourseRepository.findStudentsByCourseId(course.getId());
     }
 
     @Transactional
