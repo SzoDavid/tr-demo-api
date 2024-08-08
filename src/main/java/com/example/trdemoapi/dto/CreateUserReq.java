@@ -24,8 +24,10 @@ public class CreateUserReq {
     @Email(message="The email address is invalid.", flags={Pattern.Flag.CASE_INSENSITIVE})
     private final String email;
 
-    //TODO: validate
     @NotEmpty(message="Password is required")
+    @Pattern(regexp="^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)[A-Za-z\\d@$!%*?&]{8,}$",
+            message="The password must be at least 8 characters long, containing at least one uppercase letter, one " +
+                    "lowercase letter, one digit, and may include the special characters `@$!%*?&`")
     private final String password;
 
     @NotEmpty(message="Roles are required")
