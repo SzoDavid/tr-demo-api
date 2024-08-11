@@ -5,10 +5,10 @@ import com.example.trdemoapi.dto.UpdateCourseReq;
 import com.example.trdemoapi.model.*;
 import com.example.trdemoapi.repository.CourseRepository;
 import com.example.trdemoapi.repository.StudentCourseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -27,12 +27,12 @@ public class CourseService {
         return courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Course not found."));
     }
 
-    public List<Course> loadAllCoursesForStudent(User student) {
-        return studentCourseRepository.findCoursesByStudentId(student.getId());
+    public Page<Course> loadAllCoursesForStudent(User student, PageRequest pageRequest) {
+        return studentCourseRepository.findCoursesByStudentId(student.getId(), pageRequest);
     }
 
-    public List<Course> loadAllCoursesForTeacher(User teacher) {
-        return courseRepository.findCoursesByTeacherId(teacher.getId());
+    public Page<Course> loadAllCoursesForTeacher(User teacher, PageRequest pageRequest) {
+        return courseRepository.findCoursesByTeacherId(teacher.getId(), pageRequest);
     }
 
     @Transactional

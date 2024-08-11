@@ -5,10 +5,10 @@ import com.example.trdemoapi.dto.UpdateSubjectReq;
 import com.example.trdemoapi.model.Subject;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.repository.SubjectRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -19,16 +19,16 @@ public class SubjectService {
         this.subjectRepository = subjectRepository;
     }
 
-    public List<Subject> allSubjects() {
-        return subjectRepository.findAll();
+    public Page<Subject> getSubjectsPage(PageRequest pageRequest) {
+        return subjectRepository.findAll(pageRequest);
     }
 
     public Subject loadSubjectById(Long id) {
         return subjectRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Subject not found."));
     }
 
-    public List<Subject> loadAvailableSubjectsForUser(User user) {
-        return subjectRepository.findAvailableSubjectsForUser(user.getId());
+    public Page<Subject> loadAvailableSubjectsForUser(User user, PageRequest pageRequest) {
+        return subjectRepository.findAvailableSubjectsForUser(user.getId(), pageRequest);
     }
 
     @Transactional

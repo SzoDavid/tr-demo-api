@@ -7,11 +7,13 @@ import com.example.trdemoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Validated
 @RestController
@@ -26,8 +28,14 @@ public class AdminUserController {
 
     @Operation(summary="All users", description="Returns with the details of all users.")
     @GetMapping("/")
-    public ResponseEntity<List<User>> getAllUsers() {
-        var users = userService.allUsers();
+    public ResponseEntity<Page<User>> getAllUsers(@RequestParam(value = "offset", required = false) Integer offset,
+                                                  @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                                  @RequestParam(value = "sortBy", required = false) String sortBy) {
+        if (offset == null) offset = 0;
+        if (pageSize == null) pageSize = 10;
+        if (StringUtils.isEmpty(sortBy)) sortBy ="id";
+
+        var users = userService.getUsersPage(PageRequest.of(offset, pageSize, Sort.by(sortBy)));
         return ResponseEntity.ok(users);
     }
 

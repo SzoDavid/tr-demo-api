@@ -9,12 +9,14 @@ import com.example.trdemoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Validated
 @RestController
@@ -34,15 +36,24 @@ public class TeacherController {
     @Operation(summary="All assigned courses", description="Returns with all of the courses where the authenticated " +
             "user is assigned as a teacher.")
     @GetMapping("/courses")
-    public ResponseEntity<List<Course>> getAssignedCourses() {
+    public ResponseEntity<Page<Course>> getAssignedCourses(@RequestParam(value = "offset", required = false) Integer offset,
+                                                           @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                                           @RequestParam(value = "sortBy", required = false) String sortBy) {
+        if (offset == null) offset = 0;
+        if (pageSize == null) pageSize = 10;
+        if (StringUtils.isEmpty(sortBy)) sortBy ="id";
+
         var currentUser = userService.loadCurrentUser();
-        var courses = courseService.loadAllCoursesForTeacher(currentUser);
+        var courses = courseService.loadAllCoursesForTeacher(currentUser, PageRequest.of(offset, pageSize, Sort.by(sortBy)));
         return ResponseEntity.ok().body(courses);
     }
 
     @Operation(summary="Get students", description="Returns with all of the users registered to the given course.")
     @GetMapping("/courses/{courseId}/students")
-    public ResponseEntity<List<User>> getStudents(@PathVariable Long courseId) {
+    public ResponseEntity<Page<User>> getStudents(@PathVariable Long courseId,
+                                                  @RequestParam(value = "offset", required = false) Integer offset,
+                                                  @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                                  @RequestParam(value = "sortBy", required = false) String sortBy) {
         var course = courseService.loadCourseById(courseId);
         var currentUser = userService.loadCurrentUser();
 
@@ -50,7 +61,11 @@ public class TeacherController {
             throw new AccessDeniedException("You do not have permission to access this resource");
         }
 
-        var students = userService.loadUsersByCourse(course);
+        if (offset == null) offset = 0;
+        if (pageSize == null) pageSize = 10;
+        if (StringUtils.isEmpty(sortBy)) sortBy ="id";
+
+        var students = userService.loadUsersByCourse(course, PageRequest.of(offset, pageSize, Sort.by(sortBy)));
 
         return ResponseEntity.ok().body(students);
     }

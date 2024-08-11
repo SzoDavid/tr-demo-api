@@ -9,6 +9,8 @@ import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.repository.RoleRepository;
 import com.example.trdemoapi.repository.StudentCourseRepository;
 import com.example.trdemoapi.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,8 +38,8 @@ public class UserService implements UserDetailsService {
         this.studentCourseRepository = studentCourseRepository;
     }
 
-    public List<User> allUsers() {
-        return new ArrayList<>(userRepository.findAll());
+    public Page<User> getUsersPage(PageRequest pageRequest) {
+        return userRepository.findAll(pageRequest);
     }
 
     public User loadCurrentUser() {
@@ -63,8 +65,8 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
 
-    public List<User> loadUsersByCourse(Course course) {
-        return studentCourseRepository.findStudentsByCourseId(course.getId());
+    public Page<User> loadUsersByCourse(Course course, PageRequest pageRequest) {
+        return studentCourseRepository.findStudentsByCourseId(course.getId(), pageRequest);
     }
 
     @Transactional
