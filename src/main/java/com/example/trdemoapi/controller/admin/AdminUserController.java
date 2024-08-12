@@ -28,14 +28,14 @@ public class AdminUserController {
 
     @Operation(summary="All users", description="Returns with the details of all users.")
     @GetMapping("/")
-    public ResponseEntity<Page<User>> getAllUsers(@RequestParam(value = "offset", required = false) Integer offset,
-                                                  @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                                  @RequestParam(value = "sortBy", required = false) String sortBy) {
-        if (offset == null) offset = 0;
-        if (pageSize == null) pageSize = 10;
-        if (StringUtils.isEmpty(sortBy)) sortBy ="id";
+    public ResponseEntity<Page<User>> getAllUsers(
+            @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "id,asc") String[] sortBy) {
 
-        var users = userService.getUsersPage(PageRequest.of(offset, pageSize, Sort.by(sortBy)));
+        var users = userService.getUsersPage(PageRequest.of(offset, pageSize,
+                Sort.by(Sort.Order.by(sortBy[0]).with(Sort.Direction.fromString(sortBy[1])))));
+
         return ResponseEntity.ok(users);
     }
 

@@ -37,30 +37,29 @@ public class StudentController {
     @Operation(summary="All available courses", description="Returns with all of the subjects available for the " +
             "authenticated user. A subject is available if the user is not registered for any of its courses.")
     @GetMapping("/available")
-    public ResponseEntity<Page<Subject>> getAvailableSubjects(@RequestParam(value = "offset", required = false) Integer offset,
-                                                              @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                                              @RequestParam(value = "sortBy", required = false) String sortBy) {
-        if (offset == null) offset = 0;
-        if (pageSize == null) pageSize = 10;
-        if (StringUtils.isEmpty(sortBy)) sortBy ="id";
+    public ResponseEntity<Page<Subject>> getAvailableSubjects(
+            @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "id,asc") String[] sortBy) {
 
         var currentUser = userService.loadCurrentUser();
-        var subjects = subjectService.loadAvailableSubjectsForUser(currentUser, PageRequest.of(offset, pageSize, Sort.by(sortBy)));
+        var subjects = subjectService.loadAvailableSubjectsForUser(currentUser, PageRequest.of(offset, pageSize,
+                Sort.by(Sort.Order.by(sortBy[0]).with(Sort.Direction.fromString(sortBy[1])))));
+
         return ResponseEntity.ok().body(subjects);
     }
 
     @Operation(summary="All taken courses", description="Returns with all of the courses taken by the authenticated " +
             "user.")
     @GetMapping("/taken-courses")
-    public ResponseEntity<Page<Course>> getTakenCourses(@RequestParam(value = "offset", required = false) Integer offset,
-                                                        @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                                        @RequestParam(value = "sortBy", required = false) String sortBy) {
-        if (offset == null) offset = 0;
-        if (pageSize == null) pageSize = 10;
-        if (StringUtils.isEmpty(sortBy)) sortBy ="id";
+    public ResponseEntity<Page<Course>> getTakenCourses(
+            @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "id,asc") String[] sortBy) {
 
         var currentUser = userService.loadCurrentUser();
-        var courses = courseService.loadAllCoursesForStudent(currentUser, PageRequest.of(offset, pageSize, Sort.by(sortBy)));
+        var courses = courseService.loadAllCoursesForStudent(currentUser, PageRequest.of(offset, pageSize,
+                Sort.by(Sort.Order.by(sortBy[0]).with(Sort.Direction.fromString(sortBy[1])))));
 
         return ResponseEntity.ok().body(courses);
     }
