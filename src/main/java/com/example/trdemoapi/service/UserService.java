@@ -42,6 +42,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll(pageRequest);
     }
 
+    public List<User> getAllByRole(ERole role) {
+        return userRepository.findByRolesContaining(roleRepository.findByName(role.getNameWithPrefix()));
+    }
+
     public User loadCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         return loadUserByEmail(authentication.getName());

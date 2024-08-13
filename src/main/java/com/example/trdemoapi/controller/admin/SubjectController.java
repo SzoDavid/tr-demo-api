@@ -31,7 +31,7 @@ public class SubjectController {
     }
 
     @Operation(summary="All subjects", description="Returns with the details of all subjects.")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<Page<Subject>> getAllSubjects(
             @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
@@ -51,7 +51,7 @@ public class SubjectController {
     }
 
     @Operation(summary="Create subject", description="Returns with the subject created.")
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<Subject> createSubject(@Valid @RequestBody CreateSubjectReq request) {
         var subject = subjectService.createSubject(request);
         return ResponseEntity.ok().body(subject);

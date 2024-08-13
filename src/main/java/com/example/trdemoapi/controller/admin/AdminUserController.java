@@ -3,6 +3,7 @@ package com.example.trdemoapi.controller.admin;
 import com.example.trdemoapi.dto.CreateUserReq;
 import com.example.trdemoapi.dto.SuccessResp;
 import com.example.trdemoapi.dto.UpdateUserRolesReq;
+import com.example.trdemoapi.model.ERole;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Validated
 @RestController
@@ -27,7 +30,7 @@ public class AdminUserController {
     }
 
     @Operation(summary="All users", description="Returns with the details of all users.")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<Page<User>> getAllUsers(
             @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
@@ -39,6 +42,13 @@ public class AdminUserController {
         return ResponseEntity.ok(users);
     }
 
+    @Operation(summary="All teachers", description="Returns with the details of all users with teacher role.")
+    @GetMapping("/teachers")
+    public ResponseEntity<List<User>> getAllTeachers() {
+        var users = userService.getAllByRole(ERole.TEACHER);
+        return ResponseEntity.ok().body(users);
+    }
+
     @Operation(summary="Get user by id", description="Returns with the details of the user with the given id.")
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
@@ -48,7 +58,7 @@ public class AdminUserController {
     }
 
     @Operation(summary="Create user", description="Returns with the user created.")
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<User> createUser(@Valid @RequestBody CreateUserReq request) {
         var user = userService.createUser(request);
         return ResponseEntity.ok().body(user);
