@@ -35,6 +35,6 @@ public class Course {
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
 
-    @Formula("(SELECT COUNT(sc.student_id) FROM student_course sc WHERE sc.course_id = id)")
+    @Formula("(SELECT COUNT(sc.student_id) FROM student_courses sc WHERE sc.course_id = id)")
     private Integer registeredStudentCount;
 }
