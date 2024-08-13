@@ -2,6 +2,7 @@ package com.example.trdemoapi.controller.admin;
 
 import com.example.trdemoapi.dto.CreateCourseReq;
 import com.example.trdemoapi.dto.CreateSubjectReq;
+import com.example.trdemoapi.dto.SuccessResp;
 import com.example.trdemoapi.dto.UpdateSubjectReq;
 import com.example.trdemoapi.model.Subject;
 import com.example.trdemoapi.service.CourseService;
@@ -58,18 +59,18 @@ public class SubjectController {
 
     @Operation(summary="Update subject", description="Returns with the updated subject.")
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateSubject(@PathVariable Long id, @Valid @RequestBody UpdateSubjectReq request) {
+    public ResponseEntity<Subject> updateSubject(@PathVariable Long id, @Valid @RequestBody UpdateSubjectReq request) {
         var subject = subjectService.updateSubject(id, request);
         return ResponseEntity.ok().body(subject);
     }
 
     @Operation(summary="Delete subject", description="Deletes the subject with the given id.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteSubject(@PathVariable Long id) {
+    public ResponseEntity<SuccessResp> deleteSubject(@PathVariable Long id) {
         var subject = subjectService.loadSubjectById(id);
         subjectService.deleteSubject(subject);
 
-        return ResponseEntity.ok().body("Subject deleted successfully");
+        return ResponseEntity.ok().body(new SuccessResp(true, "Subject deleted successfully"));
     }
 
     @Operation(summary="Add course", description="Creates a course for the given subject, and returns with the " +

@@ -1,5 +1,6 @@
 package com.example.trdemoapi.controller;
 
+import com.example.trdemoapi.dto.SuccessResp;
 import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.dto.GradeReq;
@@ -71,7 +72,7 @@ public class TeacherController {
 
     @Operation(summary="Grade students", description="Grade one or more students.")
     @PostMapping("/courses/{courseId}/grades")
-    public ResponseEntity<String> gradeStudents(@PathVariable Long courseId, @Valid @RequestBody GradeReq gradeRequest) {
+    public ResponseEntity<SuccessResp> gradeStudents(@PathVariable Long courseId, @Valid @RequestBody GradeReq gradeRequest) {
         var course = courseService.loadCourseById(courseId);
         var currentUser = userService.loadCurrentUser();
 
@@ -84,12 +85,12 @@ public class TeacherController {
             gradeService.gradeStudent(course, user, grade.getValue());
         }
 
-        return ResponseEntity.ok().body("Grades saved successfully");
+        return ResponseEntity.ok().body(new SuccessResp(true, "Grades saved successfully"));
     }
 
     @Operation(summary="Remove student from course")
     @DeleteMapping("/courses/{courseId}/students/{studentId}")
-    public ResponseEntity<String> removeStudentFromCourse(@PathVariable Long courseId, @PathVariable Long studentId) {
+    public ResponseEntity<SuccessResp> removeStudentFromCourse(@PathVariable Long courseId, @PathVariable Long studentId) {
         var course = courseService.loadCourseById(courseId);
         var currentUser = userService.loadCurrentUser();
 
@@ -100,6 +101,6 @@ public class TeacherController {
         var student = userService.loadUserById(studentId);
         courseService.unregisterUserOnCourse(student, course);
 
-        return ResponseEntity.ok().body("Student removed successfully");
+        return ResponseEntity.ok().body(new SuccessResp(true, "Student removed successfully"));
     }
 }

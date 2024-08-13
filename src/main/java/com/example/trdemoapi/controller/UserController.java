@@ -1,6 +1,7 @@
 package com.example.trdemoapi.controller;
 
 import com.example.trdemoapi.dto.PasswordChangeReq;
+import com.example.trdemoapi.dto.SuccessResp;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,11 +49,11 @@ public class UserController {
             ))
     })
     @PutMapping("/me/change-password")
-    public ResponseEntity<String> changePassword(@Valid @RequestBody PasswordChangeReq passwordChangeRequest) {
+    public ResponseEntity<SuccessResp> changePassword(@Valid @RequestBody PasswordChangeReq passwordChangeRequest) {
         var currentUser = userService.loadCurrentUser();
 
         userService.changePassword(currentUser, passwordChangeRequest);
 
-        return ResponseEntity.ok("Password changed successfully");
+        return ResponseEntity.ok(new SuccessResp(true, "Password changed successfully"));
     }
 }

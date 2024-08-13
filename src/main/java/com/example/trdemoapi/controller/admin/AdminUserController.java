@@ -1,13 +1,13 @@
 package com.example.trdemoapi.controller.admin;
 
 import com.example.trdemoapi.dto.CreateUserReq;
+import com.example.trdemoapi.dto.SuccessResp;
 import com.example.trdemoapi.dto.UpdateUserRolesReq;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -65,10 +65,10 @@ public class AdminUserController {
 
     @Operation(summary="Delete user", description="Deletes the user with the given id.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<SuccessResp> deleteUser(@PathVariable Long id) {
         var user = userService.loadUserById(id);
         userService.deleteUser(user);
 
-        return ResponseEntity.ok().body("User deleted successfully");
+        return ResponseEntity.ok().body(new SuccessResp(true, "User deleted successfully"));
     }
 }

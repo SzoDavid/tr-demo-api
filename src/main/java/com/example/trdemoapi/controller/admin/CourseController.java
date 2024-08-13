@@ -1,5 +1,6 @@
 package com.example.trdemoapi.controller.admin;
 
+import com.example.trdemoapi.dto.SuccessResp;
 import com.example.trdemoapi.dto.UpdateCourseReq;
 import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.service.CourseService;
@@ -37,10 +38,10 @@ public class CourseController {
 
     @Operation(summary="Delete course", description="Deletes the course with the given id.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCourse(@PathVariable Long id) {
+    public ResponseEntity<SuccessResp> deleteCourse(@PathVariable Long id) {
         var subject = courseService.loadCourseById(id);
         courseService.deleteCourse(subject);
 
-        return ResponseEntity.ok().body("Course deleted successfully");
+        return ResponseEntity.ok().body(new SuccessResp(true, "Course deleted successfully"));
     }
 }

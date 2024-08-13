@@ -1,6 +1,7 @@
 package com.example.trdemoapi.controller;
 
 import com.example.trdemoapi.dto.StudentAverageResp;
+import com.example.trdemoapi.dto.SuccessResp;
 import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.model.Subject;
 import com.example.trdemoapi.service.CourseService;
@@ -9,7 +10,6 @@ import com.example.trdemoapi.service.SubjectService;
 import com.example.trdemoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -67,23 +67,23 @@ public class StudentController {
     @Operation(summary="Register student for course", description="Returns with all of the courses taken by the " +
             "authenticated user.")
     @PostMapping("/taken-courses")
-    public ResponseEntity<String> takeCourse(@RequestBody Long courseId) {
+    public ResponseEntity<SuccessResp> takeCourse(@RequestBody Long courseId) {
         var currentUser = userService.loadCurrentUser();
         var course = courseService.loadCourseById(courseId);
         courseService.registerUserOnCourse(currentUser, course);
 
-        return ResponseEntity.ok().body("User registered successfully");
+        return ResponseEntity.ok().body(new SuccessResp(true, "User registered successfully"));
     }
 
     @Operation(summary="Unregister student from course", description="Returns with all of the courses taken by the " +
             "authenticated user.")
     @DeleteMapping("/taken-courses/{courseId}")
-    public ResponseEntity<String> dropCourse(@PathVariable Long courseId) {
+    public ResponseEntity<SuccessResp> dropCourse(@PathVariable Long courseId) {
         var currentUser = userService.loadCurrentUser();
         var course = courseService.loadCourseById(courseId);
         courseService.unregisterUserOnCourse(currentUser, course);
 
-        return ResponseEntity.ok().body("User unregistered successfully");
+        return ResponseEntity.ok().body(new SuccessResp(true, "User unregistered successfully"));
     }
 
     @Operation(summary="Average of student", description="If the user has grades, the average will be returned, " +
