@@ -35,7 +35,7 @@ public class SubjectController {
     public ResponseEntity<Page<Subject>> getAllSubjects(
             @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
-            @RequestParam(value = "sortBy", required = false) String[] sortBy) {
+            @RequestParam(value = "sortBy", required = false, defaultValue = "id,asc") String[] sortBy) {
 
         var subjects = subjectService.getSubjectsPage(PageRequest.of(offset, pageSize,
                 Sort.by(Sort.Order.by(sortBy[0]).with(Sort.Direction.fromString(sortBy[1])))));
