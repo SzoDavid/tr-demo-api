@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Formula;
 
 @Entity
 @Table(name = "courses")
@@ -33,4 +34,7 @@ public class Course {
 
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
+
+    @Formula("(SELECT COUNT(sc.student_id) FROM student_course sc WHERE sc.course_id = id)")
+    private Integer registeredStudentCount;
 }
