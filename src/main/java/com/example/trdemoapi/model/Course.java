@@ -24,7 +24,7 @@ public class Course {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "subject_id", nullable = false)
-    @JsonIgnoreProperties("courses")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "courses"})
     private Subject subject;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
