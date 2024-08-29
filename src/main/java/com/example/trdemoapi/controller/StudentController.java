@@ -1,6 +1,5 @@
 package com.example.trdemoapi.controller;
 
-import com.example.trdemoapi.dto.BooleanResp;
 import com.example.trdemoapi.dto.StudentAverageResp;
 import com.example.trdemoapi.dto.SuccessResp;
 import com.example.trdemoapi.exception.ConflictingStateException;
@@ -111,11 +110,11 @@ public class StudentController {
     }
 
     @Operation(summary="Is subject taken by current user")
-    @GetMapping("/subject/{subjectId}/is-taken")
-    public ResponseEntity<BooleanResp> isSubjectTaken(@PathVariable Long subjectId) {
+    @GetMapping("/subject/{subjectId}/get-taken-course")
+    public ResponseEntity<Course> getTakenCourseOfSubject(@PathVariable Long subjectId) {
         var currentUser = userService.loadCurrentUser();
         var subject = subjectService.loadSubjectById(subjectId);
 
-        return ResponseEntity.ok().body(new BooleanResp(subjectService.isSubjectTakenByUser(currentUser, subject)));
+        return ResponseEntity.of(courseService.loadTakenCourseBySubjectAndStudent(subject, currentUser));
     }
 }

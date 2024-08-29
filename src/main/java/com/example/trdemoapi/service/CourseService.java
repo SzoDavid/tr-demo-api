@@ -10,6 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class CourseService {
@@ -33,6 +35,10 @@ public class CourseService {
 
     public Page<Course> loadAllCoursesForTeacher(User teacher, PageRequest pageRequest) {
         return courseRepository.findCoursesByTeacherId(teacher.getId(), pageRequest);
+    }
+
+    public Optional<Course> loadTakenCourseBySubjectAndStudent(Subject subject, User student) {
+        return studentCourseRepository.findCourseByStudentIdAndSubjectId(student.getId(), subject.getId());
     }
 
     @Transactional
