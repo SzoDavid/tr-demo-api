@@ -4,6 +4,7 @@ import com.example.trdemoapi.dto.CreateSubjectReq;
 import com.example.trdemoapi.dto.UpdateSubjectReq;
 import com.example.trdemoapi.model.Subject;
 import com.example.trdemoapi.model.User;
+import com.example.trdemoapi.repository.StudentCourseRepository;
 import com.example.trdemoapi.repository.SubjectRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,9 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SubjectService {
     private final SubjectRepository subjectRepository;
+    private final StudentCourseRepository studentCourseRepository;
 
-    public SubjectService(SubjectRepository subjectRepository) {
+    public SubjectService(SubjectRepository subjectRepository, StudentCourseRepository studentCourseRepository) {
         this.subjectRepository = subjectRepository;
+        this.studentCourseRepository = studentCourseRepository;
     }
 
     public Page<Subject> getSubjectsPage(PageRequest pageRequest) {
@@ -29,6 +32,10 @@ public class SubjectService {
 
     public Page<Subject> loadAvailableSubjectsForUser(User user, PageRequest pageRequest) {
         return subjectRepository.findAvailableSubjectsForUser(user.getId(), pageRequest);
+    }
+
+    public boolean isSubjectTakenByUser(User user, Subject subject) {
+        return studentCourseRepository.existsByStudentIdAndSubjectId(user.getId(), subject.getId());
     }
 
     @Transactional

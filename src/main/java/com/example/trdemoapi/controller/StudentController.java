@@ -1,7 +1,9 @@
 package com.example.trdemoapi.controller;
 
+import com.example.trdemoapi.dto.BooleanResp;
 import com.example.trdemoapi.dto.StudentAverageResp;
 import com.example.trdemoapi.dto.SuccessResp;
+import com.example.trdemoapi.exception.ConflictingStateException;
 import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.model.Subject;
 import com.example.trdemoapi.service.CourseService;
@@ -70,6 +72,16 @@ public class StudentController {
     public ResponseEntity<SuccessResp> takeCourse(@RequestBody Long courseId) {
         var currentUser = userService.loadCurrentUser();
         var course = courseService.loadCourseById(courseId);
+
+        if (subjectService.isSubjectTakenByUser(currentUser, course.getSubject())) {
+            throw new ConflictingStateException("Failed to register to course: another course is already taken from " +
+                    "the same subject");
+        }
+
+        if (course.getRegisteredStudentCount() >= course.getCapacity()) {
+            throw new ConflictingStateException("Failed to register to course: capacity is full");
+        }
+
         courseService.registerUserOnCourse(currentUser, course);
 
         return ResponseEntity.ok().body(new SuccessResp(true, "User registered successfully"));
@@ -96,5 +108,14 @@ public class StudentController {
         var response = new StudentAverageResp(average, average == null);
 
         return ResponseEntity.ok().body(response);
+    }
+
+    @Operation(summary="Is subject taken by current user")
+    @GetMapping("/subject/{subjectId}/is-taken")
+    public ResponseEntity<BooleanResp> isSubjectTaken(@PathVariable Long subjectId) {
+        var currentUser = userService.loadCurrentUser();
+        var subject = subjectService.loadSubjectById(subjectId);
+
+        return ResponseEntity.ok().body(new BooleanResp(subjectService.isSubjectTakenByUser(currentUser, subject)));
     }
 }

@@ -58,6 +58,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             errorDetail.setProperty("description", "The request body is invalid");
         }
 
+        if (exception instanceof ConstraintViolationException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), exception.getMessage());
+            List<String> errors = new ArrayList<>();
+            ((ConstraintViolationException) exception).getConstraintViolations().forEach(cv -> errors.add(cv.getMessage()));
+            errorDetail.setProperty("description", errors);
+        }
+
+        if (exception instanceof ConflictingStateException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(409), exception.getMessage());
+            errorDetail.setProperty("description", "Failed to complete request");
+        }
+
         if (errorDetail == null) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
             errorDetail.setProperty("description", "Unknown internal server error.");
@@ -73,14 +85,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
-
-        return new ResponseEntity<>(new ExceptionResp(errors), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ExceptionResp> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
-        List<String> errors = new ArrayList<>();
-        ex.getConstraintViolations().forEach(cv -> errors.add(cv.getMessage()));
 
         return new ResponseEntity<>(new ExceptionResp(errors), HttpStatus.BAD_REQUEST);
     }
