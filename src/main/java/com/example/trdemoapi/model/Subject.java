@@ -32,5 +32,6 @@ public class Subject {
     private Integer credit;
 
     @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
     private Collection<Course> courses;
 }

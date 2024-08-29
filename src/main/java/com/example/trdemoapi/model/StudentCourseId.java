@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
@@ -15,6 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Setter
+@Accessors(chain = true)
 public class StudentCourseId implements java.io.Serializable {
     private static final long serialVersionUID = -8228432971023714129L;
     @Column(name = "student_id", nullable = false)

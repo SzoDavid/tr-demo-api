@@ -76,7 +76,12 @@ public class CourseService {
     public void registerUserOnCourse(User user, Course course) throws IllegalArgumentException {
         if (!user.hasRole(ERole.STUDENT)) throw new IllegalArgumentException("User is not a student.");
 
+        var id = new StudentCourseId()
+                .setStudentId(user.getId())
+                .setCourseId(course.getId());
+
         var registration = new StudentCourse()
+                .setId(id)
                 .setStudent(user)
                 .setCourse(course);
 
