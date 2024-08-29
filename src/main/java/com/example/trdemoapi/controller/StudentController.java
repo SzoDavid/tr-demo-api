@@ -109,7 +109,8 @@ public class StudentController {
         return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary="Is subject taken by current user")
+    @Operation(summary="Get taken course of subject", description="If exists, returns with the course taken by the " +
+            "user of the given subject.")
     @GetMapping("/subject/{subjectId}/get-taken-course")
     public ResponseEntity<Course> getTakenCourseOfSubject(@PathVariable Long subjectId) {
         var currentUser = userService.loadCurrentUser();
