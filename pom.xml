@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>tr-demo-api</artifactId>
-    <version>0.4.2</version>
+    <version>0.5.0</version>
     <name>tr-demo-api</name>
     <description>tr-demo-api</description>
     <url/>

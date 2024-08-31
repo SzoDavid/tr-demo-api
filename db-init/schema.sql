@@ -30,7 +30,11 @@ CREATE TABLE courses (
     subject_id INTEGER NOT NULL,
     teacher_id INTEGER NOT NULL,
     capacity INTEGER NOT NULL,
-    FOREIGN KEY (subject_id) REFERENCES subjects (id),
+    day CHAR(1) not null,
+    start_time TIME not null,
+    end_time TIME not null,
+
+FOREIGN KEY (subject_id) REFERENCES subjects (id),
     FOREIGN KEY (teacher_id) REFERENCES users (id)
 );
 

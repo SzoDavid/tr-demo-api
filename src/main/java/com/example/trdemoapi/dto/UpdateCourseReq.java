@@ -1,5 +1,6 @@
 package com.example.trdemoapi.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 
@@ -14,4 +15,7 @@ public class UpdateCourseReq {
     private Integer capacity;
 
     private Long teacherId;
+
+    @Valid
+    private Schedule schedule;
 }

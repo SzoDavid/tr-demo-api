@@ -1,5 +1,6 @@
 package com.example.trdemoapi.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -17,4 +18,8 @@ public class CreateCourseReq {
 
     @NotNull(message="TeacherId is required")
     private long teacherId;
+
+    @Valid
+    @NotNull(message="Schedule is required")
+    private Schedule schedule;
 }

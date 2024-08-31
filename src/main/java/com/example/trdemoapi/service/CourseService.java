@@ -10,11 +10,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
 @Transactional
 public class CourseService {
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
     private final CourseRepository courseRepository;
     private final UserService userService;
     private final StudentCourseRepository studentCourseRepository;
@@ -44,10 +47,14 @@ public class CourseService {
     @Transactional
     public Course createCourse(Subject subject, CreateCourseReq request) {
         var teacher = userService.loadUserById(request.getTeacherId());
+
         var course = new Course()
                 .setCapacity(request.getCapacity())
                 .setSubject(subject)
-                .setTeacher(teacher);
+                .setTeacher(teacher)
+                .setDay(request.getSchedule().getDay())
+                .setStartTime(LocalTime.parse(request.getSchedule().getStartTime(), timeFormatter))
+                .setEndTime(LocalTime.parse(request.getSchedule().getEndTime(), timeFormatter));
 
         userService.addUserRole(teacher, ERole.TEACHER);
         return courseRepository.save(course);
@@ -67,6 +74,11 @@ public class CourseService {
             var teacher = userService.loadUserById(request.getTeacherId());
             course.setTeacher(teacher);
             userService.addUserRole(teacher, ERole.TEACHER);
+        }
+        if (request.getSchedule() != null) {
+            course.setDay(request.getSchedule().getDay())
+                  .setStartTime(LocalTime.parse(request.getSchedule().getStartTime(), timeFormatter))
+                  .setEndTime(LocalTime.parse(request.getSchedule().getEndTime(), timeFormatter));
         }
 
         return courseRepository.save(course);
