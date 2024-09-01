@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +35,10 @@ public class CourseService {
 
     public Page<Course> loadAllCoursesForStudent(User student, PageRequest pageRequest) {
         return studentCourseRepository.findCoursesByStudentId(student.getId(), pageRequest);
+    }
+
+    public List<Course> loadAllCoursesForStudent(User student) {
+        return studentCourseRepository.findCoursesByStudentId(student.getId());
     }
 
     public Page<Course> loadAllCoursesForTeacher(User teacher, PageRequest pageRequest) {

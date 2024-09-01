@@ -2,7 +2,7 @@ package com.example.trdemoapi.controller;
 
 import com.example.trdemoapi.dto.SuccessResp;
 import com.example.trdemoapi.model.Course;
-import com.example.trdemoapi.model.User;
+import com.example.trdemoapi.model.Student;
 import com.example.trdemoapi.dto.GradeReq;
 import com.example.trdemoapi.service.CourseService;
 import com.example.trdemoapi.service.GradeService;
@@ -10,13 +10,20 @@ import com.example.trdemoapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Validated
 @RestController
@@ -50,7 +57,7 @@ public class TeacherController {
 
     @Operation(summary="Get students", description="Returns with all of the users registered to the given course.")
     @GetMapping("/courses/{courseId}/students")
-    public ResponseEntity<Page<User>> getStudents(
+    public ResponseEntity<Page<Student>> getStudents(
             @PathVariable Long courseId,
             @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
@@ -68,6 +75,30 @@ public class TeacherController {
                         Sort.by(Sort.Order.by(sortBy[0]).with(Sort.Direction.fromString(sortBy[1])))));
 
         return ResponseEntity.ok().body(students);
+    }
+
+    @Operation(summary="Export students into csv")
+    @GetMapping("/courses/{courseId}/students/export")
+    public ResponseEntity<Resource> getStudentsCsv(@PathVariable Long courseId) {
+        var course = courseService.loadCourseById(courseId);
+        var currentUser = userService.loadCurrentUser();
+
+        if (!course.getTeacher().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("You do not have permission to access this resource");
+        }
+
+        var students = userService.loadAllUsersByCourse(course);
+        var csvContent = generateCsv(students);
+
+        var resource = new ByteArrayResource(csvContent.getBytes(StandardCharsets.UTF_8));
+
+        var filename = "%s/%d-students.csv".formatted(course.getSubject().getName(),
+                                                      course.getId());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + filename)
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(resource);
     }
 
     @Operation(summary="Grade students", description="Grade one or more students.")
@@ -102,5 +133,18 @@ public class TeacherController {
         courseService.unregisterUserOnCourse(student, course);
 
         return ResponseEntity.ok().body(new SuccessResp(true, "Student removed successfully"));
+    }
+
+    private String generateCsv(List<Student> students) {
+        var sb = new StringBuilder();
+        sb.append("ID,Name,Grade\n");
+
+        for (var student : students) {
+            sb.append(student.user().getId()).append(",")
+                    .append(student.user().getName()).append(",")
+                    .append(student.grade() != null ? student.grade() : "").append("\n");
+        }
+
+        return sb.toString();
     }
 }

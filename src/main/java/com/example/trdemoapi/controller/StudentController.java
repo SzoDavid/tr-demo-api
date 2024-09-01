@@ -2,13 +2,11 @@ package com.example.trdemoapi.controller;
 
 import com.example.trdemoapi.dto.StudentAverageResp;
 import com.example.trdemoapi.dto.SuccessResp;
+import com.example.trdemoapi.dto.timetable.TimetableResp;
 import com.example.trdemoapi.exception.ConflictingStateException;
 import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.model.Subject;
-import com.example.trdemoapi.service.CourseService;
-import com.example.trdemoapi.service.GradeService;
-import com.example.trdemoapi.service.SubjectService;
-import com.example.trdemoapi.service.UserService;
+import com.example.trdemoapi.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
@@ -17,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
 
 @Validated
 @RestController
@@ -27,12 +27,14 @@ public class StudentController {
     private final UserService userService;
     private final GradeService gradeService;
     private final SubjectService subjectService;
+    private final TimetableService timetableService;
 
-    public StudentController(CourseService courseService, UserService userService, GradeService gradeService, SubjectService subjectService) {
+    public StudentController(CourseService courseService, UserService userService, GradeService gradeService, SubjectService subjectService, TimetableService timetableService) {
         this.courseService = courseService;
         this.userService = userService;
         this.gradeService = gradeService;
         this.subjectService = subjectService;
+        this.timetableService = timetableService;
     }
 
     @Operation(summary="All available courses", description="Returns with all of the subjects available for the " +
@@ -63,6 +65,16 @@ public class StudentController {
                 Sort.by(Sort.Order.by(sortBy[0]).with(Sort.Direction.fromString(sortBy[1])))));
 
         return ResponseEntity.ok().body(courses);
+    }
+
+    @Operation(summary="All taken courses in a timetable form")
+    @GetMapping("/taken-courses/timetable")
+    public ResponseEntity<TimetableResp> getTimetable() {
+        var currentUser = userService.loadCurrentUser();
+        var courses = courseService.loadAllCoursesForStudent(currentUser);
+        var response = timetableService.generateTimetable(courses);
+
+        return ResponseEntity.ok().body(new TimetableResp(response));
     }
 
     @Operation(summary="Register student for course", description="Returns with all of the courses taken by the " +

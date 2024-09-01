@@ -2,10 +2,7 @@ package com.example.trdemoapi.service;
 
 import com.example.trdemoapi.dto.CreateUserReq;
 import com.example.trdemoapi.dto.PasswordChangeReq;
-import com.example.trdemoapi.model.Course;
-import com.example.trdemoapi.model.ERole;
-import com.example.trdemoapi.model.Role;
-import com.example.trdemoapi.model.User;
+import com.example.trdemoapi.model.*;
 import com.example.trdemoapi.repository.RoleRepository;
 import com.example.trdemoapi.repository.StudentCourseRepository;
 import com.example.trdemoapi.repository.UserRepository;
@@ -69,8 +66,12 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
 
-    public Page<User> loadUsersByCourse(Course course, PageRequest pageRequest) {
+    public Page<Student> loadUsersByCourse(Course course, PageRequest pageRequest) {
         return studentCourseRepository.findStudentsByCourseId(course.getId(), pageRequest);
+    }
+
+    public List<Student> loadAllUsersByCourse(Course course) {
+        return studentCourseRepository.findAllStudentsByCourseId(course.getId());
     }
 
     @Transactional
