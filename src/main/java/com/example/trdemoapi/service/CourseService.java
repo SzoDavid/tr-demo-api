@@ -49,6 +49,10 @@ public class CourseService {
         return studentCourseRepository.findCourseByStudentIdAndSubjectId(student.getId(), subject.getId());
     }
 
+    public boolean isCourseConflictingWithTimetable(Course course, User student) {
+        return studentCourseRepository.checkIfCourseConflictsWithTimetable(course.getId(), student.getId());
+    }
+
     @Transactional
     public Course createCourse(Subject subject, CreateCourseReq request) {
         var teacher = userService.loadUserById(request.getTeacherId());

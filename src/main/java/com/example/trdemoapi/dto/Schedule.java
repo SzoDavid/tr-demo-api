@@ -6,8 +6,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
-import java.time.LocalTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
@@ -21,10 +19,12 @@ public class Schedule {
     private short day;
 
     @NotNull(message="Start time is required")
-    @Pattern(regexp = "^([01]?\\d|2[0-3]):[0-5]\\d$", message = "Start time must be in HH:mm format")
+    @Pattern(regexp = "^((08|09|1[0-9]|20):[0-5]\\d)$\n", message = "Start time must be in HH:mm format and must be " +
+            "between 8:00 and 20:00")
     private String startTime;
 
     @NotNull(message="End time is required")
-    @Pattern(regexp = "^([01]?\\d|2[0-3]):[0-5]\\d$", message = "End time must be in HH:mm format")
+    @Pattern(regexp = "^((08|09|1[0-9]|20):[0-5]\\d)$\n", message = "End time must be in HH:mm format and must be " +
+            "between 8:00 and 20:00")
     private String endTime;
 }

@@ -16,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-
 @Validated
 @RestController
 @RequestMapping("/student")
@@ -91,6 +89,10 @@ public class StudentController {
 
         if (course.getRegisteredStudentCount() >= course.getCapacity()) {
             throw new ConflictingStateException("Failed to register to course: capacity is full");
+        }
+
+        if (courseService.isCourseConflictingWithTimetable(course, currentUser)) {
+            throw new ConflictingStateException("Failed to register to course: conflicts in timetable");
         }
 
         courseService.registerUserOnCourse(currentUser, course);

@@ -46,4 +46,12 @@ public interface StudentCourseRepository extends JpaRepository<StudentCourse, St
     boolean existsByStudentIdAndSubjectId(@Param("studentId") Long studentId, @Param("subjectId") Long subjectId);
 
     Optional<StudentCourse> findStudentCoursesById(StudentCourseId studentCourseId);
+
+    @Query("SELECT COUNT(sc) > 0 " +
+            "FROM StudentCourse sc " +
+            "JOIN sc.course cc " +
+            "JOIN Course nc ON nc.id = :courseId " +
+            "WHERE sc.student.id = :studentId AND cc.day = nc.day " +
+            "AND (cc.startTime < nc.endTime AND cc.endTime > nc.startTime)")
+    boolean checkIfCourseConflictsWithTimetable(@Param("courseId") Long courseId, @Param("studentId") Long studentId);
 }
