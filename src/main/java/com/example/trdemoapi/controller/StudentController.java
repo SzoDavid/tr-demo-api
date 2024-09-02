@@ -2,6 +2,7 @@ package com.example.trdemoapi.controller;
 
 import com.example.trdemoapi.dto.StudentAverageResp;
 import com.example.trdemoapi.dto.SuccessResp;
+import com.example.trdemoapi.dto.TakenCourse;
 import com.example.trdemoapi.dto.timetable.TimetableResp;
 import com.example.trdemoapi.exception.ConflictingStateException;
 import com.example.trdemoapi.model.Course;
@@ -53,7 +54,7 @@ public class StudentController {
     @Operation(summary="All taken courses", description="Returns with all of the courses taken by the authenticated " +
             "user.")
     @GetMapping("/taken-courses")
-    public ResponseEntity<Page<Course>> getTakenCourses(
+    public ResponseEntity<Page<TakenCourse>> getTakenCourses(
             @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
             @RequestParam(value = "sortBy", required = false, defaultValue = "id,asc") String[] sortBy) {

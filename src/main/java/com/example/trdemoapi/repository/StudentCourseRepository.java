@@ -1,5 +1,7 @@
 package com.example.trdemoapi.repository;
 
+import com.example.trdemoapi.dto.Student;
+import com.example.trdemoapi.dto.TakenCourse;
 import com.example.trdemoapi.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,19 +15,22 @@ import java.util.Optional;
 
 @Repository
 public interface StudentCourseRepository extends JpaRepository<StudentCourse, StudentCourseId> {
-    @Query("SELECT sc.course FROM StudentCourse sc WHERE sc.student.id = :studentId")
-    Page<Course> findCoursesByStudentId(@Param("studentId") Long studentId, Pageable pageable);
+    @Query("SELECT new com.example.trdemoapi.dto.TakenCourse(sc.course, g.grade) " +
+            "FROM StudentCourse sc LEFT JOIN Grade g " +
+            "ON g.id.courseId = sc.course.id AND g.id.studentId = sc.student.id " +
+            "WHERE sc.student.id = :studentId")
+    Page<TakenCourse> findCoursesByStudentId(@Param("studentId") Long studentId, Pageable pageable);
 
     @Query("SELECT sc.course FROM StudentCourse sc WHERE sc.student.id = :studentId")
     List<Course> findCoursesByStudentId(@Param("studentId") Long studentId);
 
-    @Query("SELECT new com.example.trdemoapi.model.Student(sc.student, g.grade) " +
+    @Query("SELECT new com.example.trdemoapi.dto.Student(sc.student, g.grade) " +
             "FROM StudentCourse sc LEFT JOIN Grade g " +
             "ON g.id.courseId = sc.course.id AND g.id.studentId = sc.student.id " +
             "WHERE sc.course.id = :courseId")
     Page<Student> findStudentsByCourseId(@Param("courseId") Long courseId, Pageable pageable);
 
-    @Query("SELECT new com.example.trdemoapi.model.Student(sc.student, g.grade) " +
+    @Query("SELECT new com.example.trdemoapi.dto.Student(sc.student, g.grade) " +
             "FROM StudentCourse sc LEFT JOIN Grade g " +
             "ON g.id.courseId = sc.course.id AND g.id.studentId = sc.student.id " +
             "WHERE sc.course.id = :courseId " +

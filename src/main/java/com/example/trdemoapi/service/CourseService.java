@@ -1,6 +1,7 @@
 package com.example.trdemoapi.service;
 
 import com.example.trdemoapi.dto.CreateCourseReq;
+import com.example.trdemoapi.dto.TakenCourse;
 import com.example.trdemoapi.dto.UpdateCourseReq;
 import com.example.trdemoapi.model.*;
 import com.example.trdemoapi.repository.CourseRepository;
@@ -33,7 +34,7 @@ public class CourseService {
         return courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Course not found."));
     }
 
-    public Page<Course> loadAllCoursesForStudent(User student, PageRequest pageRequest) {
+    public Page<TakenCourse> loadAllCoursesForStudent(User student, PageRequest pageRequest) {
         return studentCourseRepository.findCoursesByStudentId(student.getId(), pageRequest);
     }
 

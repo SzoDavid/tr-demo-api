@@ -2,7 +2,7 @@ package com.example.trdemoapi.controller;
 
 import com.example.trdemoapi.dto.SuccessResp;
 import com.example.trdemoapi.model.Course;
-import com.example.trdemoapi.model.Student;
+import com.example.trdemoapi.dto.Student;
 import com.example.trdemoapi.dto.GradeReq;
 import com.example.trdemoapi.service.CourseService;
 import com.example.trdemoapi.service.GradeService;
@@ -154,9 +154,9 @@ public class TeacherController {
         sb.append("ID,Name,Grade\n");
 
         for (var student : students) {
-            sb.append(student.user().getId()).append(",")
-                    .append(student.user().getName()).append(",")
-                    .append(student.grade() != null ? student.grade() : "").append("\n");
+            sb.append(student.getUser().getId()).append(",")
+                    .append(student.getUser().getName()).append(",")
+                    .append(student.getGrade() != null ? student.getGrade() : "").append("\n");
         }
 
         return sb.toString();

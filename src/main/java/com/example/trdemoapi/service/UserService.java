@@ -2,6 +2,7 @@ package com.example.trdemoapi.service;
 
 import com.example.trdemoapi.dto.CreateUserReq;
 import com.example.trdemoapi.dto.PasswordChangeReq;
+import com.example.trdemoapi.dto.Student;
 import com.example.trdemoapi.model.*;
 import com.example.trdemoapi.repository.RoleRepository;
 import com.example.trdemoapi.repository.StudentCourseRepository;

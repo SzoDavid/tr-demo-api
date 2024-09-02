@@ -1,5 +1,6 @@
 package com.example.trdemoapi.service;
 
+import com.example.trdemoapi.dto.TakenCourse;
 import com.example.trdemoapi.dto.timetable.TimetableElement;
 import com.example.trdemoapi.model.Course;
 import org.springframework.stereotype.Service;
