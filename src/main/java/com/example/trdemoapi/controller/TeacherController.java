@@ -55,6 +55,20 @@ public class TeacherController {
         return ResponseEntity.ok().body(courses);
     }
 
+    @Operation(summary="Get assigned course by id", description="Returns with the details of the course with the given id.")
+    @GetMapping("/courses/{id}")
+    public ResponseEntity<Course> getAssignedCourseById(@PathVariable Long id) {
+        var course = courseService.loadCourseById(id);
+
+        var currentUser = userService.loadCurrentUser();
+
+        if (!course.getTeacher().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("You do not have permission to access this resource");
+        }
+
+        return ResponseEntity.ok().body(course);
+    }
+
     @Operation(summary="Get students", description="Returns with all of the users registered to the given course.")
     @GetMapping("/courses/{courseId}/students")
     public ResponseEntity<Page<Student>> getStudents(

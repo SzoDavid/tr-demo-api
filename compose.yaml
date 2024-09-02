@@ -21,8 +21,3 @@ services:
       - postgres
     ports:
       - '8080:8080'
-    networks:
-      - tr-demo-network
-networks:
-  tr-demo-network:
-    external: true
