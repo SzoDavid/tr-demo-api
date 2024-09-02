@@ -9,6 +9,8 @@ services:
       - '5432:5432'
     volumes:
       - ./db-init:/docker-entrypoint-initdb.d
+    networks:
+      - tr-demo-network
   app:
     build:
       context: .
@@ -21,3 +23,8 @@ services:
       - postgres
     ports:
       - '8080:8080'
+    networks:
+      - tr-demo-network
+networks:
+  tr-demo-network:
+    external: true
