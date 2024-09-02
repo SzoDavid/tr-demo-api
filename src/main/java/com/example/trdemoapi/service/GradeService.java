@@ -2,6 +2,7 @@ package com.example.trdemoapi.service;
 
 import com.example.trdemoapi.model.Course;
 import com.example.trdemoapi.model.Grade;
+import com.example.trdemoapi.model.GradeId;
 import com.example.trdemoapi.model.User;
 import com.example.trdemoapi.repository.GradeRepository;
 import com.example.trdemoapi.repository.StudentCourseRepository;
@@ -33,7 +34,11 @@ public class GradeService {
             throw new IllegalArgumentException("Student with id " + student.getId() + " is not registered");
         }
 
+        var gradeId = new GradeId().setStudentId(student.getId())
+                                   .setCourseId(course.getId());
+
         var gradeObj = new Grade()
+                .setId(gradeId)
                 .setStudent(student)
                 .setCourse(course)
                 .setGrade(BigDecimal.valueOf(grade));

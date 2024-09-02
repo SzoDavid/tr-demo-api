@@ -119,7 +119,7 @@ public class StudentController {
         var currentUser = userService.loadCurrentUser();
 
         var average = gradeService.getAverageGradeForStudent(currentUser);
-        var response = new StudentAverageResp(average, average == null);
+        var response = new StudentAverageResp(average, average != null);
 
         return ResponseEntity.ok().body(response);
     }
