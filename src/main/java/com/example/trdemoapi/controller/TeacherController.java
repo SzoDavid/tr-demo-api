@@ -151,7 +151,7 @@ public class TeacherController {
 
     private String generateCsv(List<Student> students) {
         var sb = new StringBuilder();
-        sb.append("ID,Name,Grade\n");
+        sb.append("id,name,grade\n");
 
         for (var student : students) {
             sb.append(student.getUser().getId()).append(",")
