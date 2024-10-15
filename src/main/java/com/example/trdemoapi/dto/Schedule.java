@@ -19,12 +19,12 @@ public class Schedule {
     private short day;
 
     @NotNull(message="Start time is required")
-    @Pattern(regexp = "^((08|09|1[0-9]|20):[0-5]\\d)$\n", message = "Start time must be in HH:mm format and must be " +
+    @Pattern(regexp = "^((0[89]|1[0-9]):[0-5][0-9]|20:00)$", message = "Start time must be in HH:mm format and must be " +
             "between 8:00 and 20:00")
     private String startTime;
 
     @NotNull(message="End time is required")
-    @Pattern(regexp = "^((08|09|1[0-9]|20):[0-5]\\d)$\n", message = "End time must be in HH:mm format and must be " +
+    @Pattern(regexp = "^((0[89]|1[0-9]):[0-5][0-9]|20:00)$", message = "End time must be in HH:mm format and must be " +
             "between 8:00 and 20:00")
     private String endTime;
 }
